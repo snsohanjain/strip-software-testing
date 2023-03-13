@@ -1,17 +1,30 @@
 package com.example.softwaretesting.customer;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 
+import java.util.Objects;
 import java.util.UUID;
-
+@Entity
+@JsonIgnoreProperties(value = {"id"},allowGetters = true)
 public class Customer {
 
+    @Id
     private UUID id;
     @NotBlank
+    @Column(nullable = false)
     private String name;
 
     @NotBlank
+    @Column(nullable = false, unique = true)
     private String phoneNumber;
+
+    public Customer() {
+    }
 
     public Customer(UUID id, String name, String phoneNumber) {
         this.id = id;
@@ -50,5 +63,18 @@ public class Customer {
                 ", name='" + name + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Customer)) return false;
+        Customer customer = (Customer) o;
+        return Objects.equals(getId(), customer.getId()) && Objects.equals(getName(), customer.getName()) && Objects.equals(getPhoneNumber(), customer.getPhoneNumber());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getName(), getPhoneNumber());
     }
 }
